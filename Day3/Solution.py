@@ -6,6 +6,7 @@ class Gear:
         self.index = index
         self.adjacent_parts = []
 
+
 class EnginePartNumber:
     def __init__(self, value, start_index, end_index):
         self.value = value
@@ -80,25 +81,22 @@ class EngineInstructionLine:
 
     def get_valid_gears(self):
         valid_parts = self.get_valid_part_numbers()
-        for part in valid_parts:
-            for gear in self.gears:
+        for gear in self.gears:
+            for part in valid_parts:
                 if gear.index + 1 == part.start_index or gear.index - 1 == part.end_index:
                     gear.adjacent_parts.append(part)
 
-        valid_prev_parts = self.prev_instruction_line.get_valid_part_numbers() if self.prev_instruction_line is not None else []
-        for valid_prev_part in valid_prev_parts:
-            for gear in self.gears:
-                if gear.index in range(valid_prev_part.start_index - 1, valid_prev_part.end_index + 2):
-                    gear.adjacent_parts.append(valid_prev_part)
-
-        valid_next_parts = self.next_instruction_line.get_valid_part_numbers() if self.next_instruction_line is not None else []
-        for valid_next_part in valid_next_parts:
-            for gear in self.gears:
-                if gear.index in range(valid_next_part.start_index - 1, valid_next_part.end_index + 2):
-                    gear.adjacent_parts.append(valid_next_part)
+            EngineInstructionLine.update_gear_with_adjacent_parts(gear, self.prev_instruction_line)
+            EngineInstructionLine.update_gear_with_adjacent_parts(gear, self.next_instruction_line)
 
         return [gear for gear in self.gears if len(gear.adjacent_parts) == 2]
 
+    @staticmethod
+    def update_gear_with_adjacent_parts(gear, adjacent_instruction_line):
+        valid_parts = adjacent_instruction_line.get_valid_part_numbers() if adjacent_instruction_line is not None else []
+        for part in valid_parts:
+            if gear.index in range(part.start_index - 1, part.end_index + 2):
+                gear.adjacent_parts.append(part)
 
 
 class EngineInstruction:
@@ -127,12 +125,14 @@ class Day3Problem1(SolverBase):
         result = [int(num.value) for num in engine_instructions.get_valid_instruction_numbers()]
         print(sum(result))
 
+
 class Day3Problem2(SolverBase):
 
     def solve(self):
         instruction_lines = list(map(lambda line: EngineInstructionLine(line), self.input_data))
         engine_instructions = EngineInstruction(instruction_lines)
-        result = [int(gear.adjacent_parts[0].value) * int(gear.adjacent_parts[1].value) for gear in engine_instructions.get_valid_gears()]
+        result = [int(gear.adjacent_parts[0].value) * int(gear.adjacent_parts[1].value) for gear in
+                  engine_instructions.get_valid_gears()]
         print(sum(result))
 
 
