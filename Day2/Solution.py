@@ -37,7 +37,7 @@ class Subset:
         self.count = int(raw_string_split[0])
 
 
-class Week2Problem1(SolverBase):
+class Day2Problem1(SolverBase):
 
     def __init__(self, content, allowed_color_count):
         super().__init__(content)
@@ -49,7 +49,7 @@ class Week2Problem1(SolverBase):
         print(sum(valid_games))
 
 
-class Week2Problem2(SolverBase):
+class Day2Problem2(SolverBase):
     def solve(self):
         games = list(map(lambda line: Game(line), self.content))
         min_valid_color_counts = [game.find_min_valid_color_count() for game in games]
@@ -59,8 +59,8 @@ class Week2Problem2(SolverBase):
         print(sum(valid_games_cube))
 
 
-problem1 = Week2Problem1("Input.txt", {"red": 12, "green": 13, "blue": 14})
+problem1 = Day2Problem1("Input.txt", {"red": 12, "green": 13, "blue": 14})
 problem1.solve()
 
-problem2 = Week2Problem2("Input.txt")
+problem2 = Day2Problem2("Input.txt")
 problem2.solve()
