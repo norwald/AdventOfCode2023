@@ -39,19 +39,19 @@ class Subset:
 
 class Day2Problem1(SolverBase):
 
-    def __init__(self, content, allowed_color_count):
-        super().__init__(content)
+    def __init__(self, input_data, allowed_color_count):
+        super().__init__(input_data)
         self.allowed_color_count = allowed_color_count
 
     def solve(self):
-        games = list(map(lambda line: Game(line), self.content))
+        games = list(map(lambda line: Game(line), self.input_data))
         valid_games = [game.id for game in games if game.is_valid_game(self.allowed_color_count)]
         print(sum(valid_games))
 
 
 class Day2Problem2(SolverBase):
     def solve(self):
-        games = list(map(lambda line: Game(line), self.content))
+        games = list(map(lambda line: Game(line), self.input_data))
         min_valid_color_counts = [game.find_min_valid_color_count() for game in games]
         valid_games_cube = [valid_game["red"] * valid_game["blue"] * valid_game["green"] for valid_game in
                             min_valid_color_counts]
