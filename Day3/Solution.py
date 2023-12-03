@@ -20,7 +20,7 @@ class EngineInstructionLine:
         self.prev_instruction_line = None
         self.next_instruction_line = None
         self.symbol_indices = []
-        self.part_number_values = []
+        self.part_numbers = []
         self.gears = []
 
         self.init_digit_tracking()
@@ -45,11 +45,12 @@ class EngineInstructionLine:
             else:
                 self.symbol_indices.append(counter)
 
+        # don't forget end of the line in case the previous was a digit
         if self.prev_is_digit:
             self.update_digit_tracking(len(string_raw))
 
     def update_digit_tracking(self, current_index):
-        self.part_number_values.append(EnginePartNumber(self.current_digit, self.digit_start, current_index - 1))
+        self.part_numbers.append(EnginePartNumber(self.current_digit, self.digit_start, current_index - 1))
         self.init_digit_tracking()
 
     def init_digit_tracking(self):
@@ -58,22 +59,22 @@ class EngineInstructionLine:
         self.digit_start = 0
 
     def get_valid_part_numbers(self):
-        return [num for num in self.part_number_values if self.has_adjacent_symbols(num) or
-                EngineInstructionLine.has_adjacent_neighbor_symbols(num, self.prev_instruction_line) or
-                EngineInstructionLine.has_adjacent_neighbor_symbols(num, self.next_instruction_line)]
+        return [part for part in self.part_numbers if self.has_adjacent_symbols(part) or
+                EngineInstructionLine.has_adjacent_neighbor_symbols(part, self.prev_instruction_line) or
+                EngineInstructionLine.has_adjacent_neighbor_symbols(part, self.next_instruction_line)]
 
-    def has_adjacent_symbols(self, number):
-        if number.start_index - 1 in self.symbol_indices or number.end_index + 1 in self.symbol_indices:
+    def has_adjacent_symbols(self, part):
+        if part.start_index - 1 in self.symbol_indices or part.end_index + 1 in self.symbol_indices:
             return True
         else:
             return False
 
     @staticmethod
-    def has_adjacent_neighbor_symbols(number, adjacent_instruction_line):
+    def has_adjacent_neighbor_symbols(part, adjacent_instruction_line):
         if adjacent_instruction_line is None:
             return False
 
-        for counter in range(number.start_index - 1, number.end_index + 2):
+        for counter in range(part.start_index - 1, part.end_index + 2):
             if counter in adjacent_instruction_line.symbol_indices:
                 return True
 
@@ -110,8 +111,8 @@ class EngineInstruction:
 
         self.instruction_lines = instruction_lines
 
-    def get_valid_instruction_numbers(self):
-        return [num for line in self.instruction_lines for num in line.get_valid_part_numbers()]
+    def get_valid_part_numbers(self):
+        return [part for line in self.instruction_lines for part in line.get_valid_part_numbers()]
 
     def get_valid_gears(self):
         return [gear for line in self.instruction_lines for gear in line.get_valid_gears()]
@@ -122,7 +123,7 @@ class Day3Problem1(SolverBase):
     def solve(self):
         instruction_lines = list(map(lambda line: EngineInstructionLine(line), self.input_data))
         engine_instructions = EngineInstruction(instruction_lines)
-        result = [int(num.value) for num in engine_instructions.get_valid_instruction_numbers()]
+        result = [int(num.value) for num in engine_instructions.get_valid_part_numbers()]
         print(sum(result))
 
 
