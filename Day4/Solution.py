@@ -38,10 +38,8 @@ class RecursiveCardCrawler:
         next_card_index = card.card_id
         number_winning_cards = len(card.get_winning_cards_in_hand())
 
-        if number_winning_cards > 0:
-            for counter in range(next_card_index, next_card_index + number_winning_cards):
-                if counter < len(self.cards):
-                    self.cards_to_visit.put(self.cards[counter])
+        for counter in range(next_card_index, min(next_card_index + number_winning_cards, len(self.cards) - 1)):
+            self.cards_to_visit.put(self.cards[counter])
 
 
 class Problem1(SolverBase):
