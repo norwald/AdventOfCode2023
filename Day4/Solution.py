@@ -38,15 +38,15 @@ class RecursiveCardCrawler:
         next_card_index = card.card_id
         number_winning_cards = len(card.get_winning_cards_in_hand())
 
-        for counter in range(next_card_index, min(next_card_index + number_winning_cards, len(self.cards) - 1)):
+        for counter in range(next_card_index, min(next_card_index + number_winning_cards, len(self.cards))):
             self.cards_to_visit.put(self.cards[counter])
 
 
 class Problem1(SolverBase):
 
     def solve(self):
-        num_winning_cards = [len(Card(line).get_winning_cards_in_hand()) for line in self.input_data]
-        print(sum([2 ** (num - 1) for num in num_winning_cards if num > 0]))
+        winning_cards = [len(Card(line).get_winning_cards_in_hand()) for line in self.input_data]
+        print(sum([2 ** (winner - 1) for winner in winning_cards if winner > 0]))
 
 
 class Problem2(SolverBase):
