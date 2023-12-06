@@ -41,6 +41,8 @@ class SparseMap:
                 # we are happy entry range contains full lookup range
                 if entry.source_end_exclusive >= source_end_exclusive:
                     destination_end_exclusive = destination_start + source_end_exclusive - source_start
+                    print("Destination Start {} Destination End Exclusive {}".format(destination_start,
+                                                                                     destination_end_exclusive))
                     destination_ranges.append((destination_start, destination_end_exclusive))
                     source_start = source_end_exclusive
                     break
@@ -48,26 +50,37 @@ class SparseMap:
                     destination_end_exclusive = entry.destination_end_exclusive
                     source_start = entry.source_end_exclusive
                     if destination_end_exclusive - destination_start > 0:
+                        print("Destination Start {} Destination End Exclusive {}".format(destination_start,
+                                                                                         destination_end_exclusive))
                         destination_ranges.append((destination_start, destination_end_exclusive))
                     continue
             elif entry.source_start < source_end_exclusive:
                 destination_start = entry.destination_start
                 if entry.source_end_exclusive >= source_end_exclusive:
                     destination_end_exclusive = destination_start + source_end_exclusive - entry.source_start
+                    print("Destination Start {} Destination End Exclusive {}".format(destination_start,
+                                                                                     destination_end_exclusive))
                     destination_ranges.append((destination_start, destination_end_exclusive))
-                    source_start = source_end_exclusive
+                    source_end_exclusive = entry.source_start
                     break
                 else:
                     destination_end_exclusive = entry.destination_end_exclusive
-                    source_start = entry.source_end_exclusive
+
                     if destination_end_exclusive - destination_start > 0:
+                        print("Destination Start {} Destination End Exclusive {}".format(destination_start,
+                                                                                         destination_end_exclusive))
                         destination_ranges.append((destination_start, destination_end_exclusive))
+
+                    source_start = entry.source_end_exclusive
                     continue
 
         if source_end_exclusive - source_start >= 1:
+            print("Destination Start {} Destination End Exclusive {}".format(source_start,
+                                                                             source_end_exclusive))
             destination_ranges.append((source_start, source_end_exclusive))
 
         return destination_ranges
+
 
 class SeedsMapper:
 
@@ -158,7 +171,6 @@ class SeedsMapper:
         return len(input_lines)
 
     def get_location(self, seed):
-        print("seed {}".format(seed))
         destination = seed
         for current_map in self.all_maps:
             destination = current_map.get_destination(destination)
@@ -169,8 +181,9 @@ class SeedsMapper:
 
     def get_location_by_range(self, seed_list):
         destinations = seed_list
-        for counter in range(0, len(self.all_maps)):
-            destinations = self.all_maps[counter].get_destination_ranges_for_list(destinations)
+        for current_map in self.all_maps:
+            print("***" + current_map.name)
+            destinations = current_map.get_destination_ranges_for_list(destinations)
 
         return destinations
 
@@ -198,8 +211,9 @@ class Problem2(SolverBase):
             seed_ranges.append((seed_start, seed_start + length))
             counter += 2
 
-        print(seeds_mapper.get_location_by_range(seed_ranges))
-        # print(min(seeds_mapper.get_all_locations()))
+        all_destination_ranges = seeds_mapper.get_location_by_range(seed_ranges)
+        print(all_destination_ranges)
+        print(min([start for (start, end) in all_destination_ranges]))
 
     # brute force standard calculation which does not work
     @staticmethod
@@ -218,11 +232,8 @@ class Problem2(SolverBase):
         return all_seeds
 
 
-# problem1 = Problem1("TestInput.txt")
-# problem1.solve()
+problem1 = Problem1("Input.txt")
+problem1.solve()
 
-problem2 = Problem2("TestInput.txt")
+problem2 = Problem2("Input.txt")
 problem2.solve()
-
-#test = SparseMap([SparceMapEntry("20 10 5"),  SparceMapEntry("30 20 5") ])
-#print(test.get_destination_ranges(1 ,9))
