@@ -65,12 +65,10 @@ class SparseMap:
                     break
                 else:
                     destination_end_exclusive = entry.destination_end_exclusive
-
                     if destination_end_exclusive - destination_start > 0:
                         print("Destination Start {} Destination End Exclusive {}".format(destination_start,
                                                                                          destination_end_exclusive))
                         destination_ranges.append((destination_start, destination_end_exclusive))
-
                     source_start = entry.source_end_exclusive
                     continue
 
