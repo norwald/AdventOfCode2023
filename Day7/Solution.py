@@ -71,7 +71,6 @@ class Bet:
                                self.cards[2]] * 10000 + \
                            self.card_values_lookup[self.cards[3]] * 100 + \
                            self.card_values_lookup[self.cards[4]]
-    # A, K, Q, J, T, 9, 8, 7, 6, 5, 4, 3, or 2
 
 
 class Problem1(SolverBase):
