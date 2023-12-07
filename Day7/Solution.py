@@ -17,7 +17,11 @@ class Bet:
     card_values = {'A': 14, 'K': 13, 'Q': 12, 'J': 11, 'T': 10, '9': 9, '8': 8, '7': 7, '6': 6, '5': 5, '4': 4, '3': 3,
                    '2': 2}
 
-    def __init__(self, string_raw):
+    card_values_joker = {'A': 14, 'K': 13, 'Q': 12, 'J': 1, 'T': 10, '9': 9, '8': 8, '7': 7, '6': 6, '5': 5, '4': 4,
+                         '3': 3,
+                         '2': 2}
+
+    def __init__(self, string_raw, joker_plays=False):
         split_string = string_raw.strip().split()
 
         self.cards = split_string[0]
@@ -27,6 +31,8 @@ class Bet:
                               '2': 0}
         self.hand = Hand.HIGH_CARD
         self.order_value = -1
+        self.card_values_lookup = Bet.card_values_joker if joker_plays else Bet.card_values
+        self.joker_plays = joker_plays
 
         self.populate_cards_in_hand()
         self.eval_hand()
@@ -37,7 +43,7 @@ class Bet:
             self.cards_in_hand[card] += 1
 
     def eval_hand(self):
-        card_counts = self.cards_in_hand.values()
+        card_counts = self.get_hands_with_joker() if self.joker_plays else self.cards_in_hand.values()
         if any(count == 5 for count in card_counts):
             self.hand = Hand.FIVE_KIND
         elif any(count == 4 for count in card_counts):
@@ -51,11 +57,20 @@ class Bet:
         elif any(count == 2 for count in card_counts):
             self.hand = Hand.PAIR
 
+    def get_hands_with_joker(self):
+        num_jokers = self.cards_in_hand['J']
+        cards_count = [entry[1] for entry in sorted(self.cards_in_hand.items(), key=lambda item: item[1], reverse=True)
+                       if entry[0] != 'J']
+        cards_count[0] += num_jokers
+
+        return cards_count
+
     def set_order_value(self):
-        self.order_value = self.hand.value * 10000000000 + Bet.card_values[self.cards[0]] * 100000000 + \
-                           Bet.card_values[self.cards[1]] * 1000000 + Bet.card_values[self.cards[2]] * 10000 + \
-                           Bet.card_values[self.cards[3]] * 100 + \
-                           Bet.card_values[self.cards[4]]
+        self.order_value = self.hand.value * 10000000000 + self.card_values_lookup[self.cards[0]] * 100000000 + \
+                           self.card_values_lookup[self.cards[1]] * 1000000 + self.card_values_lookup[
+                               self.cards[2]] * 10000 + \
+                           self.card_values_lookup[self.cards[3]] * 100 + \
+                           self.card_values_lookup[self.cards[4]]
     # A, K, Q, J, T, 9, 8, 7, 6, 5, 4, 3, or 2
 
 
@@ -64,8 +79,21 @@ class Problem1(SolverBase):
     def solve(self):
         bets = [Bet(bet_string) for bet_string in self.input_data]
         bets.sort(key=lambda bet: bet.order_value)
-        score = 0
 
+        score = 0
+        for counter in range(0, len(bets)):
+            score += (counter + 1) * bets[counter].bet_amount
+
+        print(score)
+
+
+class Problem2(SolverBase):
+
+    def solve(self):
+        bets = [Bet(bet_string, True) for bet_string in self.input_data]
+        bets.sort(key=lambda bet: bet.order_value)
+
+        score = 0
         for counter in range(0, len(bets)):
             score += (counter + 1) * bets[counter].bet_amount
 
@@ -74,3 +102,6 @@ class Problem1(SolverBase):
 
 problem1 = Problem1("Input.txt")
 problem1.solve()
+
+problem2 = Problem2("Input.txt")
+problem2.solve()
