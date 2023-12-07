@@ -67,8 +67,8 @@ class Bet:
 
     def set_order_value(self):
         self.order_value = self.hand.value * 10000000000 + self.card_values_lookup[self.cards[0]] * 100000000 + \
-                           self.card_values_lookup[self.cards[1]] * 1000000 + self.card_values_lookup[
-                               self.cards[2]] * 10000 + \
+                           self.card_values_lookup[self.cards[1]] * 1000000 + \
+                           self.card_values_lookup[self.cards[2]] * 10000 + \
                            self.card_values_lookup[self.cards[3]] * 100 + \
                            self.card_values_lookup[self.cards[4]]
 
