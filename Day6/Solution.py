@@ -10,9 +10,10 @@ class Race:
         self.races = list(zip(self.times, self.distances))
 
     def get_num_wins_all_races(self):
-        return [self.get_num_wins(time, distance) for (time, distance) in self.races]
+        return [Race.get_num_wins(time, distance) for (time, distance) in self.races]
 
-    def get_num_wins(self, time, distance):
+    @staticmethod
+    def get_num_wins(time, distance):
         num_wins = 0
         max_parabola = int((time + 1) / 2)
 
