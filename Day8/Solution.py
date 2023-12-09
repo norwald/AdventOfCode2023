@@ -18,7 +18,7 @@ class PathNode:
         self.right_name = neighbors[1].strip()[0:3]
 
 
-class Map:
+class PathMap:
     def __init__(self, input_lines):
         non_empty_lines = [line for line in input_lines if line.strip()]
 
@@ -109,14 +109,14 @@ class Map:
 class Problem1(SolverBase):
 
     def solve(self):
-        path_map = Map(self.input_data)
+        path_map = PathMap(self.input_data)
         print(len(path_map.find_path()) - 1)
 
 
 class Problem2(SolverBase):
 
     def solve(self):
-        path_map = Map(self.input_data)
+        path_map = PathMap(self.input_data)
         cycles = path_map.find_cycles_to_finish()
         result = lcm(cycles)
 
