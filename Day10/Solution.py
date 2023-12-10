@@ -141,7 +141,8 @@ class PipeMazeSniffer:
         while not tiles_to_visit.empty():
             current_tile = tiles_to_visit.get()
             if current_tile not in visited_tiles:
-                visited_tiles.add(current_tile)
+                if current_tile not in self.pipes_in_loop:
+                    visited_tiles.add(current_tile)
                 for neighbour in self.get_passable_neighbours(current_tile):
                     tiles_to_visit.put(neighbour)
 
@@ -161,7 +162,11 @@ class PipeMazeSniffer:
             return True
         if (tile_indices[0], tile_indices[1] + 1) not in self.pipes_in_loop:
             return True
-
+        if (tile_indices[0], tile_indices[1] + 1) in self.pipes_in_loop:
+            if tile_indices not in self.pipes_in_loop:
+                pass
+            else:
+                pass
 
 
         return False
