@@ -9,48 +9,23 @@ class Mirror:
         self.rows = rows
 
     def find_horizontal_symmetrical_line(self):
-        col_len = len(self.rows)
-        mid_point = int(col_len / 2)
-        lookup_len = 2 * mid_point
-        remainder = col_len % 2
+        return self.find_vertical_symmetrical_line(list(zip(*self.rows)))
 
-        for counter in range(0, mid_point):
-            up_mid = mid_point - counter - 1
-            up_all_symmetrical = self.are_rows_symmetrical(tuple(self.rows[0:lookup_len - 2 * counter]), up_mid)
-            if up_all_symmetrical:
-                return mid_point - counter
-
-            down_mid = mid_point - counter - 1
-            down_all_symmetrical = self.are_rows_symmetrical(tuple(self.rows[0 + remainder + 2 * counter:lookup_len + remainder]), down_mid)
-            if down_all_symmetrical:
-                return mid_point + counter + remainder
-
-        return -1
-
-    @staticmethod
-    @functools.cache
-    def are_rows_symmetrical(rows, mid_index):
-        print(rows)
-        print(rows[mid_index::-1])
-        print(rows[mid_index + 1:])
-        zipped_rows = zip(rows[mid_index::-1], rows[mid_index + 1:])
-       # print(list(zipped_rows))
-        return all([up == down for (up, down) in zipped_rows])
-
-    def find_vertical_symmetrical_line(self):
-        row_len = len(self.rows[0])
+    def find_vertical_symmetrical_line(self, input_rows=None):
+        rows = input_rows if input_rows is not None else self.rows
+        row_len = len(rows[0])
         mid_point = int(row_len / 2)
         lookup_len = 2 * mid_point
         remainder = row_len % 2
 
         for counter in range(0, mid_point):
             left_mid = mid_point - counter - 1
-            left_all_symmetrical = all([self.is_row_symmetrical(row[0:lookup_len - 2 * counter], left_mid) for row in self.rows])
+            left_all_symmetrical = all([self.is_row_symmetrical(row[0:lookup_len - 2 * counter], left_mid) for row in rows])
             if left_all_symmetrical:
                 return mid_point - counter
 
             right_mid = mid_point - counter - 1
-            right_all_symmetrical = all([self.is_row_symmetrical(row[0 + remainder + 2 * counter:lookup_len + remainder], right_mid) for row in self.rows])
+            right_all_symmetrical = all([self.is_row_symmetrical(row[0 + remainder + 2 * counter:lookup_len + remainder], right_mid) for row in rows])
             if right_all_symmetrical:
                return mid_point + counter + remainder
 
@@ -59,8 +34,6 @@ class Mirror:
     @staticmethod
     @functools.cache
     def is_row_symmetrical(row, mid_index):
-        print(row[mid_index::-1])
-        print(row[mid_index + 1:])
         zipped_row = zip(row[mid_index::-1], row[mid_index + 1:])
         return all([left == right for (left, right) in zipped_row])
 
@@ -87,3 +60,4 @@ class Problem1(SolverBase):
 
 solution = Problem1("Input.txt")
 solution.solve()
+
