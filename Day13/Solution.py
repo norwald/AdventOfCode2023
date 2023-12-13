@@ -29,7 +29,7 @@ class Mirror:
             if right_all_symmetrical:
                return mid_point + counter + remainder
 
-        return -1
+        return 0
 
     @staticmethod
     @functools.cache
@@ -46,14 +46,8 @@ class Problem1(SolverBase):
         empty_indices = [-1] + self.find_empty_indices() + [len(self.input_data)]
         for index in range(len(empty_indices) - 1):
             mirror = Mirror(self.input_data[empty_indices[index]+1:empty_indices[index+1]])
-
-            vertical_line = mirror.find_vertical_symmetrical_line()
-            horizontal_line = mirror.find_horizontal_symmetrical_line()
-
-            if vertical_line != -1:
-                result_vertical += vertical_line
-            if horizontal_line != -1:
-                result_horizontal += horizontal_line * 100
+            result_vertical += mirror.find_vertical_symmetrical_line()
+            result_horizontal += mirror.find_horizontal_symmetrical_line() * 100
 
         print(result_vertical + result_horizontal)
 
